@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "To Do Server",
-  "main": "index.js",
+  "main": "server.js",
   "author": "Michael Paccione",
   "license": "MIT",
   "dependencies": {
@@ -15,5 +15,10 @@
   "devDependencies": {
     "nodemon": "^2.0.15",
     "supertest": "^6.2.2"
+  },
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
