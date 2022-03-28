@@ -3,7 +3,7 @@ import store from "../redux/store";
 import { setErrorMessage } from "../redux/errorSlice";
 
 const api = axios.create({
-  baseURL: "http://server:5000/api/v1",
+  baseURL: "http://localhost:5000/api/v1",
   headers: {
     "Content-Type": "application/json",
   },

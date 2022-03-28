@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   mobile: false,
+  showLoader: false,
   theme: 'light'
 };
 
@@ -17,11 +18,16 @@ const mySlice = createSlice({
       state.theme = action.payload;
       return state;
     },
+    showLoader: (state, action) => {
+      state.loader = action.payload;
+      return state;
+    }
   },
 });
 
 export const {
   setMobile,
-  setTheme
+  setTheme,
+  showLoader
 } = mySlice.actions;
 export default mySlice.reducer;

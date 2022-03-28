@@ -40,6 +40,17 @@ const isValidList = listObj => {
     return isValid;
 }
 
+const isValidUUID = uuid => {
+    const result = Joi.validate(uuid, Joi.string().uuid())
+
+    if (result.error) {
+        return false
+    }
+
+    return true
+}
+
 module.exports = {
-    isValidList
+    isValidList,
+    isValidUUID
 }

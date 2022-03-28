@@ -2,24 +2,30 @@ version: "3.8"
 services:
   client:
     build: client
-    ports: [3000]
+    ports: 
+      - "3000:3000"
+      
+    depends_on:
+      - server
     volumes:
       - ./client:/app
 
   mongodb:
     image : mongo
     environment:
-    - PUID=1000
-    - PGID=1000
-    volumes:
-    - ./mongodb/database:/data/db
-    ports:
-    - 27017:27017
+      - PUID=1000
+      - PGID=1000
+    ports: [27017]
     restart: unless-stopped
+    volumes:
+      - ./mongodb/database:/data/db
 
   server:
     build: server
-    ports: [5000]
+    ports: 
+      - "5000:5000"
     restart: always
+    depends_on:
+      - mongodb
     volumes:
       - ./server:/app

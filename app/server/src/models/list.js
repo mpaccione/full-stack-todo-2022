@@ -9,7 +9,7 @@ const ListSchema = new Schema({
     updatedAt: Number
 })
 
-const ListModel = mongoose.model('List', ListSchema)
+const ListModel = mongoose.model('list', ListSchema)
 
 module.exports = {
     ListModel

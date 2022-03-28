@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
 
 import { ToDoRow } from './index'
-import { getList, saveList } from './actions'
+import { getList, updateList } from './actions'
 
 const StyledCard = styled(Card)`
     align-content: center;
@@ -61,7 +61,7 @@ const ToDoForm = () => {
     }, [])
 
     useEffect(() => {
-
+        filterTodos(todos)
     }, [activeFilter])
 
     // subcomponent
@@ -84,7 +84,7 @@ const ToDoForm = () => {
 
     // READ
     const getSavedList = async (uuid) => {
-        const res = await dispatch(getList(uuid))
+        const res = await dispatch(getList({ uuid }))
 
         if (res) {
             setTodos(res)
@@ -95,10 +95,12 @@ const ToDoForm = () => {
     // DELETE
     const removeCompleted = async todos => {
         const remaining = todos.filter(todo => todo.completed)
-        const res = await dispatch(saveList({ list: remaining, uuid }))
+        const res = await dispatch(updateList({ list: remaining, uuid }))
 
-        setTodos(res)
-        setFilteredTodos(filterTodos(res))
+        if (res) {
+            setTodos(res)
+            setFilteredTodos(filterTodos(res))
+        }
     }
 
     // UPDATE
@@ -107,8 +109,10 @@ const ToDoForm = () => {
 
         const res = await dispatch(updateList({ list: todos, uuid }))
 
-        setTodos(res)
-        setFilteredTodos(filterTodos(res))
+        if (res) {
+            setTodos(res)
+            setFilteredTodos(filterTodos(res))
+        }
     }
 
     return (

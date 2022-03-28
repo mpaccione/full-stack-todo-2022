@@ -21,6 +21,14 @@ const deleteList = id => {
     }
 }
 
+const readList = id => {
+    try {
+        return db.lists.findOne({ id }, true)
+    } catch (e) {
+        catchErr(e)
+    }
+}
+
 const updateList = listObj => {
     try {
         return db.lists.update(
@@ -36,5 +44,6 @@ const updateList = listObj => {
 module.exports = {
     createList,
     deleteList,
+    readList,
     updateList
 }
