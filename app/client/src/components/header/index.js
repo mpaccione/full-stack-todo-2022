@@ -11,8 +11,16 @@ const Icon = styled.img`
     background-size: contain;
     background-repeat: no-repeat;
     cursor: pointer;
-    height: 40px;
-    width: 40px;
+
+    ${props => props.theme.mobile ? 
+    `
+        height: 25px;
+        width: 25px;
+    ` : 
+    `
+        height: 40px;
+        width: 40px;
+    `}
 `
 
 const Row = styled.div`
@@ -21,11 +29,19 @@ const Row = styled.div`
     flex-direction: row;
     justify-content: space-between;
 
-
     h1 {
         color: white;
-        font-size: 3em;
-        letter-spacing: 0.5em;
+        font-weight: bold;
+
+        ${props => props.theme.mobile ? 
+        `
+            font-size: 2em;
+            letter-spacing: 0.3em;
+        ` : 
+        `
+            font-size: 3em;
+            letter-spacing: 0.5em;
+        `}
     }
 `
 
@@ -37,7 +53,7 @@ const Header = () => {
         <Row>
             <h1>TODO</h1>
             <Icon
-                src={ theme === 'dark' ? darkIcon : lightIcon } 
+                src={ theme === 'dark' ? lightIcon : darkIcon } 
                 onClick={() => { theme === 'dark' ? dispatch(setTheme('light')) : dispatch(setTheme('dark')) }} 
             />
         </Row>

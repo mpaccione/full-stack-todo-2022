@@ -7,6 +7,43 @@ import { v4 as uuid } from "uuid"
 import { ToDoRow } from './index'
 import { getList, updateList } from './actions'
 
+// shared styles
+const menuStyles = `
+    cursor: pointer;
+    font-size: 0.85em;
+    opacity: 0.4;
+    transition: 0.25s all;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    &.selected {
+        color: blue;
+        opacity: 1;
+    }
+`
+
+// styled components
+const InputContainer = styled(Card)`
+    align-content: center;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    ${props => props.theme.mobile ?
+    `   margin-top: 10px;
+        padding: 10px 0px; 
+        height: 30px;
+    ` : 
+    `   padding: 15px 0px; 
+        height: 35px;
+    `
+    }
+`
+
 const Instructions = styled.p`
     font-size: 0.85em;
     margin-top: 45px;    
@@ -14,26 +51,38 @@ const Instructions = styled.p`
     text-align: center;
 `
 
-const StyledCard = styled(Card)`
-    align-content: center;
-    display: flex;
+const Footer = styled.div`
+    display: flex !important;
     flex-direction: row;
-    height: 35px;
     justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 15px 0px;
+    padding: 0px 15px 5px 15px;
 
+    h3 { ${menuStyles} }
+
+    h3:first-of-type {
+        cursor: default !important;
+
+        &:hover {
+            opacity: 0.4 !important;
+        }
+    }
+`
+
+const MobileFooter = styled(Card)`
+    box-shadow: none !important;
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+
+    h3 { 
+        ${menuStyles} 
+        font-size: 1em;
+        padding: 0px 10px;
+    }
 `
 
 const StyledContainer = styled(Container)`
     padding: 0 !important;
-`
-
-const Submit = styled.button`
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    margin-right: 15px;
 `
 
 const StyledInput = styled.input`
@@ -44,26 +93,16 @@ const StyledInput = styled.input`
     width: 80%;
 `
 
-const Footer = styled.div`
-    display: flex !important;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0px 15px;
+const Submit = styled.button`
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-right: 15px;
+    opacity: 0.4;
+    transition: 0.25s all;
 
-    h3 {
-        cursor: pointer;
-        font-size: 0.85em;
-        opacity: 0.4;
-        transition: 0.25s all;
-
-        &:hover {
-            opacity: 1;
-        }
-
-        &.selected {
-            color: blue;
-            opacity: 1;
-        }
+    &:hover {
+        opacity: 1;
     }
 `
 
@@ -97,8 +136,8 @@ const ToDoForm = () => {
     // subcomponent
     const Filters = () => (
         <>
-            {fArr.map(f => (
-                <h3 className={activeFilter === f ? 'selected' : ''} onClick={() => { setActiveFilter(f) }}>{f}</h3>
+            {fArr.map((f, i) => (
+                <h3 className={activeFilter === f ? 'selected' : ''} key={i} onClick={() => { setActiveFilter(f) }}>{f}</h3>
             ))}
         </>
     )
@@ -136,8 +175,9 @@ const ToDoForm = () => {
     }
 
     // DELETE
-    const removeCompleted = async todos => {
-        const remaining = todos.filter(todo => !todo.completed)
+    const removeTodo = async condition => {
+        // removes single and completed via dynamic filter param
+        const remaining = todos.filter(todo => condition(todo))
         setTodos(remaining) // update client state first for fast UX
         const todosRes = await dispatch(updateList({ list: remaining, uuid: listId }))
         setTodoState(todosRes)
@@ -161,15 +201,15 @@ const ToDoForm = () => {
 
     return (
         <StyledContainer>
-            <StyledCard>
+            <InputContainer>
                 <StyledInput type="text" placeholder="Create a new todo..." />
                 <Submit onClick={(e) => { addTodo(e.target.value) }}>Submit</Submit>
-            </StyledCard>
-            <Card>
+            </InputContainer>
+            <Card style={{ boxShadow: '0px 15px 20px #ddd' }}>
                 <Table>
                     <TableBody>
-                        {filteredTodos.map(({ completed, description, id }) => (
-                            <ToDoRow {...{ completed, description, id, updateTodoList }} />
+                        {filteredTodos.map(({ completed, description, id }, i) => (
+                            <ToDoRow key={i} {...{ completed, description, id, removeTodo, updateTodoList }} />
                         ))}
                     </TableBody>
                 </Table>
@@ -179,17 +219,17 @@ const ToDoForm = () => {
                             <h3>{todos.filter(todo => !todo.completed).length} items left</h3>
                             {!mobile && <Filters />}
                             <h3 onClick={() => {
-                                removeCompleted(todos)
+                                removeTodo((t) => !t.completed)
                             }}>Clear Completed</h3>
                         </>
                     }
                 </Footer>
-                {mobile &&
-                    <StyledCard>
-                        <Filters />
-                    </StyledCard>
-                }
             </Card>
+            {mobile &&
+                <MobileFooter>
+                    <Filters />
+                </MobileFooter>
+            }
             <Instructions>Drag and drop to reorder list</Instructions>
         </StyledContainer>
     )

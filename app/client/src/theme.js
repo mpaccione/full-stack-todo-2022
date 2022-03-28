@@ -1,3 +1,8 @@
+const primary = {
+    primary1: 'hsl(220, 98%, 61%)', // Bright Blue
+    primaryGradient: 'linear-gradient(135deg, hsl(192, 100%, 67%) 0%, hsl(280, 87%, 65%) 100%)' // Check Background
+}
+
 const light = {
     color1: 'hsl(0, 0%, 98%)',   // Very Light Gray
     color2: 'hsl(236, 33%, 92%', // Very Light Grayish Blue
@@ -17,6 +22,7 @@ const dark = {
 }
 
 export default {
-    dark,
-    light
+    dark: { ...dark, ...primary },
+    light: { ...light, ...primary }
 }
+

@@ -12,9 +12,10 @@ const Background = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 300px;
     transition: 1s all;
     width: 100%;
+
+    ${props => props.theme.mobile ? `height: 205px` : `height: 300px`}
 `
 
 const Banner = () => {
