@@ -1,4 +1,5 @@
 const cors = require('cors')
+const bodyParser = require('body-parser')
 const express = require('express')
 const mongoose = require('mongoose')
 const routes = require('./routes')
@@ -9,10 +10,13 @@ const DB_URI = 'mongodb://mongodb:27017/todo_db'
 const PORT = process.env.SERVER_PORT || 5000
 
 // middleware
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors())
-app.use(express.json())
 app.use((req, res, next) => {
+    console.log("=====================")
     console.log(req)
+    console.log("=====================")
     next()
 })
 
@@ -23,7 +27,7 @@ db.on('connected', () => console.log('MongoDB connected'));
 db.on('disconnected', () => console.log('MongoDB disconnected'));
 
 // routes
-app.use(BASE_PATH, routes.listRouter)
+app.use(`${BASE_PATH}/list`, routes.listRouter)
 
 // test
 app.get('/ping', (req, res) => {

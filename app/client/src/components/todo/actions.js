@@ -5,22 +5,22 @@ import { showLoader } from "../../redux/settingsSlice";
 // or when all tasks have been deleted. For example purposes not included.
 
 // const createList = ({ list, uuid }) => async dispatch => {
-//     const res = await post(`/${uuid}`, list)
-//     return res
+//     const res = await post(`/list/${uuid}`, list)
+//     return res.data
 // }
 
 const getList = ({ uuid }) => async dispatch => {
     dispatch(showLoader(true));
-    const res = await get(`/${uuid}`)
+    const res = await get(`/list/${uuid}`)
     dispatch(showLoader(false));
-    return res
+    return res.data.items
 }
 
 const updateList = ({ list, uuid }) => async dispatch => {
     dispatch(showLoader(true));
-    const res = await put(`/${uuid}`, list)
+    const res = await put(`/list/${uuid}`, list)
     dispatch(showLoader(false));
-    return res
+    return res.data.items
 }
 
 export { 

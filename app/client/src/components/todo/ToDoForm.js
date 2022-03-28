@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Container, Table, TableBody, TableFooter } from "@mui/material"
+import { Card, Container, Table, TableBody } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
+import { v4 as uuid } from "uuid"
 
 import { ToDoRow } from './index'
 import { getList, updateList } from './actions'
+
+const Instructions = styled.p`
+    font-size: 0.85em;
+    margin-top: 45px;    
+    opacity: 0.4;
+    text-align: center;
+`
 
 const StyledCard = styled(Card)`
     align-content: center;
@@ -12,6 +20,7 @@ const StyledCard = styled(Card)`
     flex-direction: row;
     height: 35px;
     justify-content: space-between;
+    margin-bottom: 20px;
     padding: 15px 0px;
 
 `
@@ -31,21 +40,40 @@ const StyledInput = styled.input`
     border: none;
     font-size: 1em;
     margin-left: 15px;
+    outline: none !important;
     width: 80%;
 `
 
-const TableFooterStyled = styled(TableFooter)`
-    display: flex;
+const Footer = styled.div`
+    display: flex !important;
+    flex-direction: row;
     justify-content: space-between;
+    padding: 0px 15px;
+
+    h3 {
+        cursor: pointer;
+        font-size: 0.85em;
+        opacity: 0.4;
+        transition: 0.25s all;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &.selected {
+            color: blue;
+            opacity: 1;
+        }
+    }
 `
 
 // NOTE: A user id would normally be sent to fetch all list id's
 // Since we only have one list in this example the list id will be static
-const uuid = 'cabc437a-4ba0-4086-9d74-8b975febb936'
-
+const listId = 'cabc437a-4ba0-4086-9d74-8b975febb936'
+const fArr = ['All', 'Active', 'Completed']
 const filterMap = {
-    'Active': true,
-    'Completed': false
+    'Active': false,
+    'Completed': true
 }
 
 const ToDoForm = () => {
@@ -57,93 +85,112 @@ const ToDoForm = () => {
     const mobile = useSelector(state => state.settings.mobile)
 
     useEffect(() => {
-        getSavedList(uuid)
+        getSavedList(uuid())
     }, [])
 
     useEffect(() => {
-        filterTodos(todos)
-    }, [activeFilter])
+        if (todos) {
+            filterTodos(todos)
+        }
+    }, [activeFilter, todos])
 
     // subcomponent
     const Filters = () => (
         <>
-            <h3 onClick={() => { setActiveFilter('All') }}>All</h3>
-            <h3 onClick={() => { setActiveFilter('Active') }}>Active</h3>
-            <h3 onClick={() => { setActiveFilter('Completed') }}>Completed</h3>
+            {fArr.map(f => (
+                <h3 className={activeFilter === f ? 'selected' : ''} onClick={() => { setActiveFilter(f) }}>{f}</h3>
+            ))}
         </>
     )
 
     // functions
-    const filterTodos = todos => {
-        if (activeFilter === 'All') {
-            return todos
+    const addTodo = description => {
+        const newTodo = {
+            completed: false,
+            description,
+            id: uuid()
         }
-
-        return todos.filter(todo => todo.completed === filterMap[activeFilter])
+        setTodos([...todos, newTodo])
     }
 
-    // READ
-    const getSavedList = async (uuid) => {
-        const res = await dispatch(getList({ uuid }))
-
-        if (res) {
-            setTodos(res)
-            setFilteredTodos(filterTodos(res))
+    const filterTodos = todos => {
+        if (activeFilter === 'All') {
+            return setFilteredTodos(todos)
         }
+
+        setFilteredTodos(todos.filter(todo => todo.completed === filterMap[activeFilter]))
+    }
+
+    const setTodoState = todosRes => {
+        if (todosRes) {
+            setTodos(todosRes)
+            filterTodos(todosRes)
+        }
+    }
+
+    //////////
+    // READ
+    const getSavedList = async listId => {
+        const todosRes = await dispatch(getList({ uuid: listId }))
+        setTodoState(todosRes)
     }
 
     // DELETE
     const removeCompleted = async todos => {
-        const remaining = todos.filter(todo => todo.completed)
-        const res = await dispatch(updateList({ list: remaining, uuid }))
-
-        if (res) {
-            setTodos(res)
-            setFilteredTodos(filterTodos(res))
-        }
+        const remaining = todos.filter(todo => !todo.completed)
+        setTodos(remaining) // update client state first for fast UX
+        const todosRes = await dispatch(updateList({ list: remaining, uuid: listId }))
+        setTodoState(todosRes)
     }
 
     // UPDATE
-    const updateList = async (newTodo) => {
-        setTodos([...todos, newTodo])
+    const updateTodoList = async updatedTodo => {
+        const todosCopy = JSON.parse(JSON.stringify(todos));
+        const index = todosCopy.findIndex(todo => todo.id === updatedTodo.id)
 
-        const res = await dispatch(updateList({ list: todos, uuid }))
-
-        if (res) {
-            setTodos(res)
-            setFilteredTodos(filterTodos(res))
+        if (index === -1) {
+            return console.error('Cannot find todo index to update')
         }
+
+        todosCopy[index] = updatedTodo
+
+        setTodos(todosCopy) // update client state first for fast UX
+        const todosRes = await dispatch(updateList({ list: todosCopy, uuid: listId }))
+        setTodoState(todosRes)
     }
 
     return (
         <StyledContainer>
             <StyledCard>
                 <StyledInput type="text" placeholder="Create a new todo..." />
-                <Submit onClick={(e) => { updateList(e.target.value) }}>Submit</Submit>
+                <Submit onClick={(e) => { addTodo(e.target.value) }}>Submit</Submit>
             </StyledCard>
-            <Table>
-                <TableBody>
-                    {todos.map((todo, key) => (
-                        <ToDoRow {...{ key, todo }} />
-                    ))}
-                </TableBody>
-                <TableFooterStyled>
+            <Card>
+                <Table>
+                    <TableBody>
+                        {filteredTodos.map(({ completed, description, id }) => (
+                            <ToDoRow {...{ completed, description, id, updateTodoList }} />
+                        ))}
+                    </TableBody>
+                </Table>
+                <Footer>
                     {todos.length > 0 &&
                         <>
-                            <h3>{todos.length} items left</h3>
+                            <h3>{todos.filter(todo => !todo.completed).length} items left</h3>
                             {!mobile && <Filters />}
                             <h3 onClick={() => {
                                 removeCompleted(todos)
                             }}>Clear Completed</h3>
                         </>
                     }
-                </TableFooterStyled>
+                </Footer>
                 {mobile &&
                     <StyledCard>
                         <Filters />
                     </StyledCard>
                 }
-            </Table>
+            </Card>
+            <Instructions>Drag and drop to reorder list</Instructions>
         </StyledContainer>
     )
 }

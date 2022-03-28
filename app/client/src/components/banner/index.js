@@ -13,6 +13,7 @@ const Background = styled.div`
     background-repeat: no-repeat;
     background-size: cover;
     height: 300px;
+    transition: 1s all;
     width: 100%;
 `
 

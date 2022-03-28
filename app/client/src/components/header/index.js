@@ -1,5 +1,6 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setTheme } from '../../redux/settingsSlice'
 import styled from 'styled-components'
 
 import darkIcon from './icon-moon.svg'
@@ -28,15 +29,16 @@ const Row = styled.div`
     }
 `
 
-const Header = ({ setTheme }) => {
+const Header = () => {
     const theme = useSelector(state => state.settings.theme)
+    const dispatch = useDispatch()
 
     return (
         <Row>
             <h1>TODO</h1>
             <Icon
                 src={ theme === 'dark' ? darkIcon : lightIcon } 
-                onClick={() => { theme === 'dark' ? setTheme('light') : setTheme('dark') }} 
+                onClick={() => { theme === 'dark' ? dispatch(setTheme('light')) : dispatch(setTheme('dark')) }} 
             />
         </Row>
     )
