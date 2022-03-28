@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { Banner, Header } from './components'
+import { Banner, Header, ToDoForm } from './components'
 import themeObj from './theme.js'
 
 const Container = styled.div`
@@ -27,6 +27,7 @@ function App() {
         <Banner />
         <Container>
           <Header setTheme={setTheme} />
+          <ToDoForm />
         </Container>
       </div>
     </ThemeProvider>

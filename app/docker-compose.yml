@@ -1,5 +1,11 @@
 version: "3.8"
 services:
+  client:
+    build: client
+    ports: [3000]
+    volumes:
+      - ./client:/app
+
   mongodb:
     image : mongo
     environment:
@@ -13,7 +19,7 @@ services:
 
   server:
     build: server
-    ports: [3000]
+    ports: [5000]
     restart: always
     volumes:
       - ./server:/app

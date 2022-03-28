@@ -6,7 +6,7 @@ const routes = require('./routes')
 const app = express()
 const BASE_PATH = '/api/v1'
 const DB_URI = 'mongodb://mongodb:27017/todo_db'
-const PORT = process.env.SERVER_PORT || 3000
+const PORT = process.env.SERVER_PORT || 5000
 
 // middleware
 app.use(cors())
