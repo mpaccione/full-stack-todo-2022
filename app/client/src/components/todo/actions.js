@@ -11,14 +11,14 @@ import { showLoader } from "../../redux/settingsSlice";
 
 const getList = ({ uuid }) => async dispatch => {
     dispatch(showLoader(true));
-    const res = await get(`/list/${uuid}`)
+    const res = await get(`/list/?listId=${uuid}`)
     dispatch(showLoader(false));
     return res.data.items
 }
 
 const updateList = ({ list, uuid }) => async dispatch => {
     dispatch(showLoader(true));
-    const res = await put(`/list/${uuid}`, list)
+    const res = await put(`/list/?listId=${uuid}`, list)
     dispatch(showLoader(false));
     return res.data.items
 }

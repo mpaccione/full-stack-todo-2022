@@ -13,6 +13,8 @@ const listSchema = Joi.object({
     updatedAt: Joi.number() // ms
 })
 
+const uuidSchema = Joi.string().uuid()
+
 const validator = async(schema, obj) => {
     return await [schema].validateAsync(obj)
 }
@@ -40,8 +42,8 @@ const isValidList = listObj => {
     return isValid;
 }
 
-const isValidUUID = uuid => {
-    const result = Joi.validate(uuid, Joi.string().uuid())
+const isValidUUID = async uuid => {
+    const result = await uuidSchema.validateAsync(uuid)
 
     if (result.error) {
         return false

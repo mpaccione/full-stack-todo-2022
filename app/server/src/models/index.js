@@ -1,5 +1,5 @@
-const listModel = require('./list')
+const ListModel = require('./list')
 
 module.exports = {
-    listModel
+    ListModel
 }

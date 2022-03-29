@@ -1,4 +1,4 @@
-const { db } = require('../server.js') 
+const { ListModel } = require('../models') 
 
 const catchErr = (e) => {
     console.error(e);
@@ -7,7 +7,7 @@ const catchErr = (e) => {
 
 const createList = listObj => {
     try {
-        return db.lists.insertOne(listObj)
+        return ListModel.insertOne(listObj)
     } catch (e) {
         catchErr(e)
     }
@@ -15,7 +15,7 @@ const createList = listObj => {
 
 const deleteList = id => {
     try {
-        return db.lists.remove({ id }, true)
+        return ListModel.remove({ id }, true)
     } catch (e) {
         catchErr(e)
     }
@@ -23,7 +23,7 @@ const deleteList = id => {
 
 const readList = id => {
     try {
-        return db.lists.findOne({ id }, true)
+        return ListModel.findOne({ id }, true)
     } catch (e) {
         catchErr(e)
     }
@@ -31,7 +31,7 @@ const readList = id => {
 
 const updateList = listObj => {
     try {
-        return db.lists.update(
+        return ListModel.update(
             { "id" : listObj.id },
             { $set : { ...listObj } }
         )
