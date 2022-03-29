@@ -1,42 +1,43 @@
 const { ListModel } = require('../models') 
 
-const catchErr = (e) => {
-    console.error(e);
+const catchErr = (err) => {
+    console.error(err);
     return false
 }
 
-const createList = listObj => {
+const createList = async listObj => {
     try {
-        return ListModel.insertOne(listObj)
-    } catch (e) {
-        catchErr(e)
+        return await ListModel.insertOne(listObj)
+    } catch (err) {
+        catchErr(err)
     }
 }
 
-const deleteList = id => {
+const deleteList = async id => {
     try {
-        return ListModel.remove({ id }, true)
-    } catch (e) {
-        catchErr(e)
+        return await ListModel.remove({ id }, true)
+    } catch (err) {
+        catchErr(err)
     }
 }
 
-const readList = id => {
+const readList = async id => {
     try {
-        return ListModel.findOne({ id }, true)
-    } catch (e) {
-        catchErr(e)
+        return await ListModel.findOne({ id })
+    } catch (err) {
+        catchErr(err)
     }
 }
 
-const updateList = listObj => {
+const updateList = async listObj => {
     try {
-        return ListModel.update(
+        return await ListModel.findOneAndReplace(
             { "id" : listObj.id },
-            { $set : { ...listObj } }
+            listObj,
+            { returnDocument: 'after' }
         )
-    } catch (e) {
-        catchErr(e)
+    } catch (err) {
+        catchErr(err)
     }
 }
 

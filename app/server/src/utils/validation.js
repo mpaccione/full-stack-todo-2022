@@ -1,25 +1,27 @@
 const Joi = require('joi')
 
 const itemSchema = Joi.object({
-    id: Joi.string().uuid(),
     completed: Joi.boolean(),
-    description: Joi.string()
+    description: Joi.string(),
+    id: Joi.string().uuid(),
 })
 
 const listSchema = Joi.object({
+    _id: Joi.string(),
+    __v: Joi.number(),
+    createdAt: Joi.number(), // ms
     id: Joi.string().uuid(),
     items: Joi.array(),
-    createdAt: Joi.number(), // ms
     updatedAt: Joi.number() // ms
 })
 
 const uuidSchema = Joi.string().uuid()
 
-const validator = async(schema, obj) => {
-    return await [schema].validateAsync(obj)
+const validator = async (schema, obj) => {
+    return await schema.validateAsync(obj)
 }
 
-const isValidList = listObj => {
+const isValidList = async listObj => {
     let isValid = true;
 
     // validate list
@@ -31,8 +33,8 @@ const isValidList = listObj => {
     const itemLength = listObj.items.length
 
     if (itemLength) {
-        for (let i = 0; i < itemLength; i++) {
-            if (!validator(itemSchema, array[i])) {
+        for await (const item of listObj.items) {
+            if (!validator(itemSchema, item)) {
                 isValid = false
                 i = itemLength // break
             }   

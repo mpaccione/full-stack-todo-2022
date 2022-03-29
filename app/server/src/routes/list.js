@@ -6,18 +6,25 @@ const { createList, deleteList, readList, updateList } = listController
 const listRouter = express.Router({ mergeParams: true });
 
 listRouter.use((req, res, next) => {
-    console.log({ QUERY: req.query })
-    if (!req.query || !req.query.listId) {
-        return res.status(400).send({ message: 'No List UUID Submitted' })
+    // query string methods
+    if (req.method === 'DELETE' || req.method === 'GET') {
+        if (!req.query || !req.query.listId) {
+            return res.status(400).json({ message: 'No List UUID Submitted' })
+        }
+
+        if (!isValidUUID(req.query.listId)) {
+            return res.status(400).json({ message: 'Incorrect UUID Submitted' })
+        }
     }
 
-    if (!isValidUUID(req.query.listId)) {
-        return res.status(400).send({ message: 'Incorrect UUID Submitted' })
-    }
-
+    // body methods
     if (req.method === 'POST' || req.method === 'PUT') {
-        if (!isValidList(req.body)) {
-            return res.status(400).send({ message: 'Incorrect List Submitted' })
+        if (!req.body || !req.body.list) {
+            return res.status(400).json({ message: 'No List Body Submitted' })
+        }
+
+        if (!isValidList(req.body.list)) {
+            return res.status(400).json({ message: 'Incorrect List Submitted' })
         }
     }
 
@@ -25,52 +32,34 @@ listRouter.use((req, res, next) => {
 })
 
 // CREATE
-listRouter.post('/', (req, res) => {
-    const list = createList(req.params.listId)
-    !list && res.status(500).send({ message: 'Database Creation Error' })
+listRouter.post('/', async (req, res) => {
+    const list = await createList(req.body.list)
+    !list && res.status(500).json({ message: 'Database Creation Error' })
 
-    res.status(200).send(list)
+    res.status(200).json(list)
 })
 
 // READ 
-listRouter.get('/', (req, res) => {
-    const list = readList(req.params.listId)
-    !list && res.status(500).send({ message: 'Database Read Error' })
-    // const list = {
-    //     id: "cabc437a-4ba0-4086-9d74-8b975febb936",
-    //     items: [
-    //         {
-    //             id: '30834b7c-bbba-49e8-8356-af4b4736bd97',
-    //             completed: true,
-    //             description: 'Review Coding Challenge'
-    //         },
-    //         {
-    //             id: '8e9fcc61-9e8f-451d-b7ee-f8445268b3ff',
-    //             completed: false,
-    //             description: 'Hire Michael Paccione'
-    //         },
-    //         {
-    //             id: '8ca3449a-3f81-4d2e-8b27-89e9f2b2a7cc',
-    //             completed: false,
-    //             description: 'Live Long and Prosper'
-    //         }
-    //     ]
-    // }
+listRouter.get('/', async (req, res) => {
+    console.log('GET')
+    const list = await readList(req.query.listId)
+    console.log({ list })
+    !list && res.status(500).json({ message: 'Database Read Error' })
 
-    res.status(200).send(list)
+    res.status(200).json(list)
 })
 
 // UPDATE
-listRouter.put('/', (req, res) => {
-    const list = updateList(req.params.listId)
-    !list && res.status(500).send({ message: 'Database Update Error' })
+listRouter.put('/', async (req, res) => {
+    const list = await updateList(req.body.list)
+    !list && res.status(500).json({ message: 'Database Update Error' })
 
-    res.status(200).send(list)
+    res.status(200).json(list)
 })
 
 // DELETE
-listRouter.delete('/', (req, res) => {
-    const list = deleteList(req.params.listId)
+listRouter.delete('/', async (req, res) => {
+    const list = await deleteList(req.query.listId)
     !list && res.status(500).send({ message: 'Database Deletion Error' })
 
     res.status(204).send()

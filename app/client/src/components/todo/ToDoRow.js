@@ -19,12 +19,12 @@ const CompletedToggle = styled.div`
     overflow: hidden;
     position: relative;
 
-    ${props => props.theme.mobile ? 
-    `
+    ${props => props.theme.mobile ?
+        `
         height: 20px;
         width: 20px;    
-    ` : 
-    `
+    ` :
+        `
         height: 30px;
         width: 30px;
     `}
@@ -81,22 +81,19 @@ const RemoveCell = styled(TableCell)`
 const StyledRow = styled(TableRow)`
     height: 35px;
 
-    ${props => props.theme.theme === 'dark' ? 
+    ${props => props.theme.theme === 'dark' ?
     `
         background-color: ${props.theme.color2} !important;
         border-bottom: 1px solid ${props.theme.color7} !important;
-    ` : 
+    ` :
     `
         background-color: white !important;
     `}
 
-    ${props => props.theme.mobile ? 
-        `padding: 5px 0px;` : 
-        `padding: 15px 0px;`
-    }
+    ${props => props.theme.mobile ? `padding: 5px 0px;` : `padding: 15px 0px;`}
 `
 
-const ToDoRow = ({ completed, description, id, removeToDo, updateTodoList }) => (
+const ToDoRow = ({ completed, description, id, removeTodo, updateTodoList }) => (
     <StyledRow>
         <CompletedCell>
             <CompletedToggle
@@ -108,9 +105,10 @@ const ToDoRow = ({ completed, description, id, removeToDo, updateTodoList }) => 
         </CompletedCell>
         <DescriptionCell className={completed ? 'completed' : ''}>{description}</DescriptionCell>
         <RemoveCell>
-            <img src={cancel} alt="Remove" onClick={() => { removeToDo(t => t.id !== id) }} />
+            <img src={cancel} alt="Remove" onClick={() => { removeTodo(t => t.id !== id) }} />
         </RemoveCell>
     </StyledRow>
 )
+
 
 export default ToDoRow

@@ -5,7 +5,7 @@ import { v4 as uuid } from "uuid"
 import styled from "styled-components"
 
 import { ToDoRow } from './index'
-import { getList, updateList } from './actions'
+import { createList, deleteList, getList, updateList } from './actions'
 import theme from '../../theme'
 
 // shared styles
@@ -37,11 +37,11 @@ const InputContainer = styled(Card)`
     background-color: ${props => props.theme.theme === 'dark' ? props.theme.color2 : 'white'} !important;
 
     ${props => props.theme.mobile ?
-    `   margin-top: 10px;
+        `   margin-top: 10px;
         padding: 10px 0px; 
         height: 30px;
-    ` : 
-    `   padding: 15px 0px; 
+    ` :
+        `   padding: 15px 0px; 
         height: 35px;
     `
     }
@@ -90,11 +90,11 @@ const MobileFooter = styled(Card)`
 
 const StyledCard = styled(Card)`
     ${props => props.theme.theme === 'dark' ?
-    `   
+        `   
         background-color: ${props.theme.color2} !important;
         box-shadow: 0px ${props.theme.mobile ? '90px' : '35px'} 40px #111 !important;
     ` :
-    `
+        `
         background-color: white !important;
         box-shadow: 0px 15px 20px ${props.theme.color2} !important;
     `}
@@ -111,12 +111,12 @@ const StyledInput = styled.input`
     outline: none !important;
     width: 80%;
 
-    ${props => props.theme.theme === 'dark' ? 
-    `   
+    ${props => props.theme.theme === 'dark' ?
+        `   
         color: ${props.theme.color3};
         background-color: ${props.theme.color2};
-    ` : 
-    `
+    ` :
+        `
         color: ${props.theme.color5};
         background-color: 'white';
     `};
@@ -147,21 +147,21 @@ const filterMap = {
 
 const ToDoForm = () => {
     const [activeFilter, setActiveFilter] = useState('All')
-    const [todos, setTodos] = useState([])
     const [filteredTodos, setFilteredTodos] = useState([])
+    const [list, setList] = useState({})
 
     const dispatch = useDispatch()
     const mobile = useSelector(state => state.settings.mobile)
 
     useEffect(() => {
-        getSavedList(uuid())
+        getSavedList({ listId })
     }, [])
 
     useEffect(() => {
-        if (todos) {
-            filterTodos(todos)
+        if (list.items) {
+            list.items.length ? filterList(list) : deleteList(list) // if no items free up space (delete list)
         }
-    }, [activeFilter, todos])
+    }, [activeFilter, list])
 
     // subcomponent
     const Filters = () => (
@@ -179,43 +179,45 @@ const ToDoForm = () => {
             description,
             id: uuid()
         }
-        setTodos([...todos, newTodo])
+        setList({ ...list, items: [...list.items, newTodo] })
     }
 
-    const filterTodos = todos => {
+    const filterList = list => {
         if (activeFilter === 'All') {
-            return setFilteredTodos(todos)
+            return setFilteredTodos(list.items)
         }
 
-        setFilteredTodos(todos.filter(todo => todo.completed === filterMap[activeFilter]))
+        setFilteredTodos(list.items.filter(todo => todo.completed === filterMap[activeFilter]))
     }
 
     const setTodoState = todosRes => {
         if (todosRes) {
-            setTodos(todosRes)
-            filterTodos(todosRes)
+            setList(todosRes)
+            filterList(todosRes)
         }
     }
 
     //////////
     // READ
     const getSavedList = async listId => {
-        const todosRes = await dispatch(getList({ uuid: listId }))
+        const todosRes = await dispatch(getList(listId))
         setTodoState(todosRes)
     }
 
     // DELETE
     const removeTodo = async condition => {
         // removes single and completed via dynamic filter param
-        const remaining = todos.filter(todo => condition(todo))
-        setTodos(remaining) // update client state first for fast UX
-        const todosRes = await dispatch(updateList({ list: remaining, uuid: listId }))
+        const remaining = list.items ? list.items.filter(todo => condition(todo)) : []
+        const newList = { ...list, items: remaining, updatedAt: Date.now() }
+
+        setList(newList) // update client state first for fast UX
+        const todosRes = await dispatch(updateList({ list: newList }))
         setTodoState(todosRes)
     }
 
     // UPDATE
     const updateTodoList = async updatedTodo => {
-        const todosCopy = JSON.parse(JSON.stringify(todos));
+        const todosCopy = JSON.parse(JSON.stringify(list.items));
         const index = todosCopy.findIndex(todo => todo.id === updatedTodo.id)
 
         if (index === -1) {
@@ -224,8 +226,10 @@ const ToDoForm = () => {
 
         todosCopy[index] = updatedTodo
 
-        setTodos(todosCopy) // update client state first for fast UX
-        const todosRes = await dispatch(updateList({ list: todosCopy, uuid: listId }))
+        const newList = { ...list, items: todosCopy, updatedAt: Date.now() }
+
+        setList(newList) // update client state first for fast UX
+        const todosRes = await dispatch(updateList({ list: newList }))
         setTodoState(todosRes)
     }
 
@@ -244,9 +248,9 @@ const ToDoForm = () => {
                     </TableBody>
                 </Table>
                 <Footer>
-                    {todos.length > 0 &&
+                    {list.items && list.items.length > 0 &&
                         <>
-                            <h3>{todos.filter(todo => !todo.completed).length} items left</h3>
+                            <h3>{list.items.filter(todo => !todo.completed).length} items left</h3>
                             {!mobile && <Filters />}
                             <h3 onClick={() => {
                                 removeTodo((t) => !t.completed)
