@@ -18,18 +18,28 @@ const listSchema = Joi.object({
 const uuidSchema = Joi.string().uuid()
 
 const validator = async (schema, obj) => {
-    return await schema.validateAsync(obj)
+    if (!obj || obj === {}) {
+        return false
+    }
+
+    try {
+        await schema.validateAsync(obj) 
+        return true
+    } catch (err) {
+        console.error(err)
+        return false
+    }
 }
 
-const isValidItem = item => {
-    return validator(itemSchema, item)
+const isValidItem = async item => {
+    return await validator(itemSchema, item)
 }
 
 const isValidList = async listObj => {
     let isValid = true;
 
     // validate list
-    if (!listObj || !validator(listSchema, listObj)) {
+    if (!listObj || !(await validator(listSchema, listObj))) {
         return false
     }
 
@@ -37,10 +47,9 @@ const isValidList = async listObj => {
     const itemLength = listObj.items.length
 
     if (itemLength) {
-        for await (const item of listObj.items) {
-            if (!validator(itemSchema, item)) {
+        for await (item of listObj.items) {
+            if (!(await validator(itemSchema, item))) {
                 isValid = false
-                i = itemLength // break
             }   
         }
     }

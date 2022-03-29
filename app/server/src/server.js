@@ -1,6 +1,6 @@
-const cors = require('cors')
-const bodyParser = require('body-parser')
 const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
 const mongoose = require('mongoose')
 
 const routes = require('./routes')
@@ -51,4 +51,4 @@ app.get('/collections', async (req, res) => {
 // server
 app.listen(PORT, () => console.log(`Server Listening at http://localhost:${PORT}`))
 
-exports.app = { app }
+exports.app = { app, BASE_PATH }

@@ -9,7 +9,7 @@ const createList = async listObj => {
     try {
         return await new ListModel(listObj).save()
     } catch (err) {
-        catchErr(err)
+        return catchErr(err)
     }
 }
 
@@ -17,7 +17,7 @@ const deleteList = async id => {
     try {
         return await ListModel.deleteOne({ id })
     } catch (err) {
-        catchErr(err)
+        return catchErr(err)
     }
 }
 
@@ -25,7 +25,7 @@ const readList = async id => {
     try {
         return await ListModel.findOne({ id })
     } catch (err) {
-        catchErr(err)
+        return catchErr(err)
     }
 }
 
@@ -37,10 +37,9 @@ const updateList = async listObj => {
             { returnDocument: 'after' }
         )
     } catch (err) {
-        catchErr(err)
+        return catchErr(err)
     }
 }
-
 
 module.exports = {
     createList,
