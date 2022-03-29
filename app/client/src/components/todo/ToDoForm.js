@@ -37,11 +37,11 @@ const InputContainer = styled(Card)`
     background-color: ${props => props.theme.theme === 'dark' ? props.theme.color2 : 'white'} !important;
 
     ${props => props.theme.mobile ?
-        `   margin-top: 10px;
+    `   margin-top: 10px;
         padding: 10px 0px; 
         height: 30px;
     ` :
-        `   padding: 15px 0px; 
+    `   padding: 15px 0px; 
         height: 35px;
     `
     }
@@ -90,12 +90,10 @@ const MobileFooter = styled(Card)`
 
 const StyledCard = styled(Card)`
     ${props => props.theme.theme === 'dark' ?
-        `   
-        background-color: ${props.theme.color2} !important;
+    `   background-color: ${props.theme.color2} !important;
         box-shadow: 0px ${props.theme.mobile ? '90px' : '35px'} 40px #111 !important;
     ` :
-        `
-        background-color: white !important;
+    `   background-color: white !important;
         box-shadow: 0px 15px 20px ${props.theme.color2} !important;
     `}
 `
@@ -112,12 +110,10 @@ const StyledInput = styled.input`
     width: 80%;
 
     ${props => props.theme.theme === 'dark' ?
-        `   
-        color: ${props.theme.color3};
+    `   color: ${props.theme.color3};
         background-color: ${props.theme.color2};
     ` :
-        `
-        color: ${props.theme.color5};
+    `   color: ${props.theme.color5};
         background-color: 'white';
     `};
 `
@@ -148,6 +144,7 @@ const filterMap = {
 const ToDoForm = () => {
     const [activeFilter, setActiveFilter] = useState('All')
     const [filteredTodos, setFilteredTodos] = useState([])
+    const [inputVal, setInputVal] = useState('')
     const [list, setList] = useState({})
 
     const dispatch = useDispatch()
@@ -159,7 +156,7 @@ const ToDoForm = () => {
 
     useEffect(() => {
         if (list.items) {
-            list.items.length ? filterList(list) : deleteList(list) // if no items free up space (delete list)
+            list.items.length ? filterList(list) : clearList(list) // if no items free up space (delete list)
         }
     }, [activeFilter, list])
 
@@ -173,13 +170,21 @@ const ToDoForm = () => {
     )
 
     // functions
-    const addTodo = description => {
+    const addTodo = async () => {
         const newTodo = {
             completed: false,
-            description,
+            description: inputVal,
             id: uuid()
         }
-        setList({ ...list, items: [...list.items, newTodo] })
+
+        setInputVal('')
+
+        if (!list.items) {
+            const todosRes = await dispatch(createList({ newTodo }))
+            return setTodoState(todosRes)
+        }
+
+        updateTodoList(newTodo)
     }
 
     const filterList = list => {
@@ -191,10 +196,8 @@ const ToDoForm = () => {
     }
 
     const setTodoState = todosRes => {
-        if (todosRes) {
-            setList(todosRes)
-            filterList(todosRes)
-        }
+        todosRes && setList(todosRes)
+        filterList(todosRes ? todosRes : list) // if api call failed revert state
     }
 
     //////////
@@ -205,30 +208,35 @@ const ToDoForm = () => {
     }
 
     // DELETE
+    const clearList = async list => {
+        const delRes = await dispatch(deleteList({ listId: list.id }))
+        delRes && setList({})
+    }
+
+    // UPDATE
     const removeTodo = async condition => {
         // removes single and completed via dynamic filter param
         const remaining = list.items ? list.items.filter(todo => condition(todo)) : []
         const newList = { ...list, items: remaining, updatedAt: Date.now() }
 
-        setList(newList) // update client state first for fast UX
+        setFilteredTodos(newList.items) // update client state first for fast UX
         const todosRes = await dispatch(updateList({ list: newList }))
         setTodoState(todosRes)
     }
 
-    // UPDATE
     const updateTodoList = async updatedTodo => {
         const todosCopy = JSON.parse(JSON.stringify(list.items));
         const index = todosCopy.findIndex(todo => todo.id === updatedTodo.id)
 
         if (index === -1) {
-            return console.error('Cannot find todo index to update')
+            todosCopy.push(updatedTodo) // adds new todo
+        } else {
+            todosCopy[index] = updatedTodo
         }
-
-        todosCopy[index] = updatedTodo
 
         const newList = { ...list, items: todosCopy, updatedAt: Date.now() }
 
-        setList(newList) // update client state first for fast UX
+        setFilteredTodos(newList.items) // update client state first for fast UX
         const todosRes = await dispatch(updateList({ list: newList }))
         setTodoState(todosRes)
     }
@@ -236,8 +244,13 @@ const ToDoForm = () => {
     return (
         <StyledContainer>
             <InputContainer>
-                <StyledInput type="text" placeholder="Create a new todo..." />
-                <Submit onClick={(e) => { addTodo(e.target.value) }}>Submit</Submit>
+                <StyledInput
+                    type="text"
+                    onChange={(e) => { setInputVal(e.target.value) }}
+                    placeholder="Create a new todo..."
+                    value={inputVal}
+                />
+                <Submit onClick={() => { addTodo() }}>Submit</Submit>
             </InputContainer>
             <StyledCard>
                 <Table>

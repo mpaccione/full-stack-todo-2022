@@ -7,7 +7,7 @@ const catchErr = (err) => {
 
 const createList = async listObj => {
     try {
-        return await ListModel.insertOne(listObj)
+        return await new ListModel(listObj).save()
     } catch (err) {
         catchErr(err)
     }
@@ -15,7 +15,7 @@ const createList = async listObj => {
 
 const deleteList = async id => {
     try {
-        return await ListModel.remove({ id }, true)
+        return await ListModel.deleteOne({ id })
     } catch (err) {
         catchErr(err)
     }

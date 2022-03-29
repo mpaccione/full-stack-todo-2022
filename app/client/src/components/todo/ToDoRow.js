@@ -98,7 +98,7 @@ const ToDoRow = ({ completed, description, id, removeTodo, updateTodoList }) => 
         <CompletedCell>
             <CompletedToggle
                 className={completed ? 'completed' : ''}
-                onClick={() => { updateTodoList({ completed, description, id }) }}
+                onClick={() => { updateTodoList({ completed: !completed, description, id }) }}
             >
                 {completed && <img src={check} alt="Complete" />}
             </CompletedToggle>

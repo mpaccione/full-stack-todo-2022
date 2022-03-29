@@ -4,9 +4,9 @@ import { showLoader } from "../../redux/settingsSlice";
 // NOTE: Creating a list would occur when there is no existing list
 // or when all tasks have been deleted and a new one is added.
 
-const createList = ({ list }) => async dispatch => {
+const createList = ({ newTodo }) => async dispatch => {
     dispatch(showLoader(true));
-    const res = await post(`/list`, { list })
+    const res = await post(`/list`, { newTodo })
     dispatch(showLoader(false));
     return res.data
 }

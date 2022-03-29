@@ -1,8 +1,10 @@
 const express = require('express')
 const { listController } = require('../controllers')
-const { isValidList, isValidUUID } = require('../utils')
+const { isValidItem, isValidList, isValidUUID } = require('../utils')
 
 const { createList, deleteList, readList, updateList } = listController
+const { seedJson } = require('../utils')
+
 const listRouter = express.Router({ mergeParams: true });
 
 listRouter.use((req, res, next) => {
@@ -19,11 +21,15 @@ listRouter.use((req, res, next) => {
 
     // body methods
     if (req.method === 'POST' || req.method === 'PUT') {
-        if (!req.body || !req.body.list) {
+        if (!req.body || req.body === {}) {
             return res.status(400).json({ message: 'No List Body Submitted' })
         }
 
-        if (!isValidList(req.body.list)) {
+        if (req.body.newTodo && !isValidItem(req.body.newTodo)) {
+            return res.status(400).json({ message: 'Incorrect Todo Submitted' })
+        }
+
+        if (req.body.list && !isValidList(req.body.list)) {
             return res.status(400).json({ message: 'Incorrect List Submitted' })
         }
     }
@@ -33,7 +39,15 @@ listRouter.use((req, res, next) => {
 
 // CREATE
 listRouter.post('/', async (req, res) => {
-    const list = await createList(req.body.list)
+    // NOTE: Due to the use case of only one list we manually create it
+    const item = req.body.newTodo
+    const newList = seedJson[0]
+    newList.items = [item]
+    newList.createdAt = Date.now()
+    newList.updatedAt = Date.now()
+
+    const list = await createList(newList) 
+    console.log({ list })
     !list && res.status(500).json({ message: 'Database Creation Error' })
 
     res.status(200).json(list)
@@ -41,9 +55,7 @@ listRouter.post('/', async (req, res) => {
 
 // READ 
 listRouter.get('/', async (req, res) => {
-    console.log('GET')
     const list = await readList(req.query.listId)
-    console.log({ list })
     !list && res.status(500).json({ message: 'Database Read Error' })
 
     res.status(200).json(list)
@@ -62,7 +74,7 @@ listRouter.delete('/', async (req, res) => {
     const list = await deleteList(req.query.listId)
     !list && res.status(500).send({ message: 'Database Deletion Error' })
 
-    res.status(204).send()
+    res.status(200).json(list)
 })
 
 module.exports = listRouter

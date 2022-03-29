@@ -21,6 +21,10 @@ const validator = async (schema, obj) => {
     return await schema.validateAsync(obj)
 }
 
+const isValidItem = item => {
+    return validator(itemSchema, item)
+}
+
 const isValidList = async listObj => {
     let isValid = true;
 
@@ -55,6 +59,7 @@ const isValidUUID = async uuid => {
 }
 
 module.exports = {
+    isValidItem,
     isValidList,
     isValidUUID
 }
