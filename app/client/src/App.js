@@ -41,7 +41,7 @@ function App() {
   activeTheme.theme = theme
 
   useEffect(() => {
-    // TODO: add state update with throttle for mobile
+    // TODO: add throttle for mobile
     dispatch(setMobile(window.innerWidth < 768 ? true : false))
   }, [window.innerWidth])
 

@@ -6,13 +6,14 @@ import cancel from "./icon-cross.svg"
 import check from "./icon-check.svg"
 
 const CompletedCell = styled(TableCell)`
+    border-bottom: none !important;
     width: 25px !important;
 
     ${props => props.theme.mobile ? `padding-right: 0px !important` : ``};
 `
 
 const CompletedToggle = styled.div`
-    border: 1px solid lightgray;
+    border: 1px solid ${props => props.theme.theme === 'dark' ? props.theme.color6 : props.theme.color2};
     border-radius: 50%;
     cursor: pointer;
     overflow: hidden;
@@ -41,6 +42,8 @@ const CompletedToggle = styled.div`
 `
 
 const DescriptionCell = styled(TableCell)`
+    border-bottom: none !important;
+    color: ${props => props.theme.theme === 'dark' ? props.theme.color3 : props.theme.color5} !important;
     font-size: ${props => props.theme.mobile ? '0.8em' : '1em'} !important;
     font-weight: bold;
     vertical-align: bottom !important;
@@ -53,6 +56,8 @@ const DescriptionCell = styled(TableCell)`
 `
 
 const RemoveCell = styled(TableCell)`
+    border-bottom: none !important;
+
     img {
         cursor: pointer;
         float: right;
@@ -74,8 +79,16 @@ const RemoveCell = styled(TableCell)`
 `
 
 const StyledRow = styled(TableRow)`
-    background-color: white !important;
     height: 35px;
+
+    ${props => props.theme.theme === 'dark' ? 
+    `
+        background-color: ${props.theme.color2} !important;
+        border-bottom: 1px solid ${props.theme.color7} !important;
+    ` : 
+    `
+        background-color: white !important;
+    `}
 
     ${props => props.theme.mobile ? 
         `padding: 5px 0px;` : 

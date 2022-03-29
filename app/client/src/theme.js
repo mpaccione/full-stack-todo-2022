@@ -5,10 +5,10 @@ const primary = {
 
 const light = {
     color1: 'hsl(0, 0%, 98%)',   // Very Light Gray
-    color2: 'hsl(236, 33%, 92%', // Very Light Grayish Blue
-    color3: 'hsl(233, 11%, 84%', // Light Grayish Blue
-    color4: 'hsl(236, 9%, 61%',  // Dark Grayish Blue
-    color5: 'hsl(235, 19%, 35%', // Very Dark Grayish Blue
+    color2: 'hsl(236, 33%, 92%)', // Very Light Grayish Blue
+    color3: 'hsl(233, 11%, 84%)', // Light Grayish Blue
+    color4: 'hsl(236, 9%, 61%)',  // Dark Grayish Blue
+    color5: 'hsl(235, 19%, 35%)', // Very Dark Grayish Blue
 }
 
 const dark = {
@@ -23,6 +23,7 @@ const dark = {
 
 export default {
     dark: { ...dark, ...primary },
-    light: { ...light, ...primary }
+    light: { ...light, ...primary },
+    primary
 }
 

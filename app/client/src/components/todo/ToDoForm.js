@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Container, Table, TableBody } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
-import styled from "styled-components"
 import { v4 as uuid } from "uuid"
+import styled from "styled-components"
 
 import { ToDoRow } from './index'
 import { getList, updateList } from './actions'
+import theme from '../../theme'
 
 // shared styles
 const menuStyles = `
@@ -19,7 +20,7 @@ const menuStyles = `
     }
 
     &.selected {
-        color: blue;
+        color: ${theme.primary.primary1};
         opacity: 1;
     }
 `
@@ -33,6 +34,8 @@ const InputContainer = styled(Card)`
     justify-content: space-between;
     margin-bottom: 20px;
 
+    background-color: ${props => props.theme.theme === 'dark' ? props.theme.color2 : 'white'} !important;
+
     ${props => props.theme.mobile ?
     `   margin-top: 10px;
         padding: 10px 0px; 
@@ -45,6 +48,7 @@ const InputContainer = styled(Card)`
 `
 
 const Instructions = styled.p`
+    color: ${props => props.theme.theme === 'dark' ? props.theme.color3 : props.theme.color5} !important;
     font-size: 0.85em;
     margin-top: 45px;    
     opacity: 0.4;
@@ -52,6 +56,7 @@ const Instructions = styled.p`
 `
 
 const Footer = styled.div`
+    color: ${props => props.theme.theme === 'dark' ? props.theme.color3 : props.theme.color5} !important;
     display: flex !important;
     flex-direction: row;
     justify-content: space-between;
@@ -69,7 +74,9 @@ const Footer = styled.div`
 `
 
 const MobileFooter = styled(Card)`
+    background-color: ${props => props.theme.theme === 'dark' ? props.theme.color2 : 'white'} !important;
     box-shadow: none !important;
+    color: ${props => props.theme.theme === 'dark' ? props.theme.color3 : props.theme.color5} !important;
     display: flex;
     justify-content: center;
     margin-top: 15px;
@@ -79,6 +86,18 @@ const MobileFooter = styled(Card)`
         font-size: 1em;
         padding: 0px 10px;
     }
+`
+
+const StyledCard = styled(Card)`
+    ${props => props.theme.theme === 'dark' ?
+    `   
+        background-color: ${props.theme.color2} !important;
+        box-shadow: 0px ${props.theme.mobile ? '90px' : '35px'} 40px #111 !important;
+    ` :
+    `
+        background-color: white !important;
+        box-shadow: 0px 15px 20px ${props.theme.color2} !important;
+    `}
 `
 
 const StyledContainer = styled(Container)`
@@ -91,11 +110,22 @@ const StyledInput = styled.input`
     margin-left: 15px;
     outline: none !important;
     width: 80%;
+
+    ${props => props.theme.theme === 'dark' ? 
+    `   
+        color: ${props.theme.color3};
+        background-color: ${props.theme.color2};
+    ` : 
+    `
+        color: ${props.theme.color5};
+        background-color: 'white';
+    `};
 `
 
 const Submit = styled.button`
     background-color: transparent;
     border: none;
+    color: ${props => props.theme.theme === 'dark' ? props.theme.color3 : props.theme.color5};
     cursor: pointer;
     margin-right: 15px;
     opacity: 0.4;
@@ -205,7 +235,7 @@ const ToDoForm = () => {
                 <StyledInput type="text" placeholder="Create a new todo..." />
                 <Submit onClick={(e) => { addTodo(e.target.value) }}>Submit</Submit>
             </InputContainer>
-            <Card style={{ boxShadow: '0px 15px 20px #ddd' }}>
+            <StyledCard>
                 <Table>
                     <TableBody>
                         {filteredTodos.map(({ completed, description, id }, i) => (
@@ -224,7 +254,7 @@ const ToDoForm = () => {
                         </>
                     }
                 </Footer>
-            </Card>
+            </StyledCard>
             {mobile &&
                 <MobileFooter>
                     <Filters />
