@@ -1,6 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+interface ErrorState {
+  errorMessage: String;
+  successMessage: String;
+  showLoader: Boolean;
+}
+
+const initialState: ErrorState = {
   errorMessage: "",
   successMessage: "",
   showLoader: false,
@@ -10,34 +16,25 @@ const mySlice = createSlice({
   name: "errors",
   initialState,
   reducers: {
-    setErrorMessage: (state, action) => {
+    setErrorMessage: (state, action: PayloadAction<string>) => {
       state.errorMessage = action.payload;
-      return state;
     },
     clearErrorMessage: (state) => {
       state.errorMessage = "";
-      return state;
     },
-    setSuccessMessage: (state, action) => {
+    setSuccessMessage: (state, action: PayloadAction<string>) => {
       state.successMessage = action.payload;
-      return state;
     },
     clearSuccessMessage: (state) => {
       state.successMessage = "";
-      return state;
-    },
-    showLoader: (state, action) => {
-      state.showLoader = action.payload;
-      return state;
-    },
+    }
   },
 });
 
 export const {
-  setErrorMessage,
   clearErrorMessage,
-  setSuccessMessage,
   clearSuccessMessage,
-  showLoader,
+  setErrorMessage,
+  setSuccessMessage,
 } = mySlice.actions;
 export default mySlice.reducer;

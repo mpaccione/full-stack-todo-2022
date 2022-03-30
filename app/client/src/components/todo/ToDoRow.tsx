@@ -2,6 +2,7 @@ import React from 'react'
 import { TableRow, TableCell } from "@mui/material"
 import styled from "styled-components"
 
+import { ToDo } from '../../shared/types'
 import cancel from "./icon-cross.svg"
 import check from "./icon-check.svg"
 
@@ -93,7 +94,10 @@ const StyledRow = styled(TableRow)`
     ${props => props.theme.mobile ? `padding: 5px 0px;` : `padding: 15px 0px;`}
 `
 
-const ToDoRow = ({ completed, description, id, removeTodo, updateTodoList }) => (
+const ToDoRow = (
+    { completed, description, id, removeTodo, updateTodoList }: 
+    { completed:boolean, description:string, id:string, removeTodo:Function, updateTodoList:Function }
+) => (
     <StyledRow>
         <CompletedCell>
             <CompletedToggle
@@ -105,7 +109,7 @@ const ToDoRow = ({ completed, description, id, removeTodo, updateTodoList }) => 
         </CompletedCell>
         <DescriptionCell className={completed ? 'completed' : ''}>{description}</DescriptionCell>
         <RemoveCell>
-            <img src={cancel} alt="Remove" onClick={() => { removeTodo(t => t.id !== id) }} />
+            <img src={cancel} alt="Remove" onClick={() => { removeTodo((t: ToDo) => t.id !== id) }} />
         </RemoveCell>
     </StyledRow>
 )

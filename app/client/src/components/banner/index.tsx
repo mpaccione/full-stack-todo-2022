@@ -1,7 +1,7 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
+import { useAppSelector } from '../../redux/hooks'
 import dLight from './bg-desktop-light.jpg'
 import dDark from './bg-desktop-dark.jpg'
 import mLight from './bg-mobile-light.jpg'
@@ -19,7 +19,7 @@ const Background = styled.div`
 `
 
 const Banner = () => {
-    const { mobile, theme } = useSelector(state => state.settings)
+    const { mobile, theme } = useAppSelector(state => state.settings)
     let img;
     
     if (mobile) {

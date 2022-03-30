@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { Banner, Header, ToDoForm } from './components'
 import { setMobile } from './redux/settingsSlice';
-import themeObj from './theme.js'
+import { useAppDispatch, useAppSelector } from './redux/hooks';
+import themeObj from './theme'
 
 const Body = styled.div`
   background-color: ${props => props.theme.color1};
@@ -32,13 +32,10 @@ const Container = styled.div`
 }`
 
 function App() {
-  const { mobile, theme } = useSelector(state => state.settings)
-  const dispatch = useDispatch()
+  const { mobile, theme } = useAppSelector(state => state.settings)
+  const dispatch = useAppDispatch()
 
-  const activeTheme = themeObj[theme] 
-
-  activeTheme.mobile = mobile
-  activeTheme.theme = theme
+  const activeTheme = { mobile, theme, ...themeObj[theme as keyof object] as {} }
 
   useEffect(() => {
     // TODO: add throttle for mobile

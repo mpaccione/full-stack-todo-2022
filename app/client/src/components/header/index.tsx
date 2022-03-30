@@ -1,8 +1,8 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setTheme } from '../../redux/settingsSlice'
 import styled from 'styled-components'
 
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { setTheme } from '../../redux/settingsSlice'
 import darkIcon from './icon-moon.svg'
 import lightIcon from './icon-sun.svg'
 
@@ -46,8 +46,8 @@ const Row = styled.div`
 `
 
 const Header = () => {
-    const theme = useSelector(state => state.settings.theme)
-    const dispatch = useDispatch()
+    const theme = useAppSelector(state => state.settings.theme)
+    const dispatch = useAppDispatch()
 
     return (
         <Row>
