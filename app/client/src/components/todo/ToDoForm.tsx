@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid"
 import styled from "styled-components"
 
 import { ToDoRow } from './index'
+import { CompletedToggle } from './ToDoRow'
 import { createList, deleteList, getList, updateList } from './actions'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { List, ToDo } from '../../shared/types'
@@ -57,11 +58,20 @@ const Instructions = styled.p`
 `
 
 const Footer = styled.div`
-    color: ${props => props.theme.theme === 'dark' ? props.theme.color3 : props.theme.color5} !important;
+    bottom: 0;
     display: flex !important;
     flex-direction: row;
     justify-content: space-between;
     padding: 0px 15px 5px 15px;
+    position: sticky;
+
+    ${props => props.theme.theme === 'dark' ? `
+        background-color: ${props.theme.color2} !important;
+        color: ${props.theme.color3} !important;
+    ` : `
+        background-color: white !important;
+        color: ${props.theme.color5} !important;
+    `}
 
     h3 { ${menuStyles} }
 
@@ -90,6 +100,9 @@ const MobileFooter = styled(Card)`
 `
 
 const StyledCard = styled(Card)`
+    max-height: ${props => props.theme.mobile ? '100vh' : '65vh'};
+    overflow: auto;
+
     ${props => props.theme.theme === 'dark' ?
         `   background-color: ${props.theme.color2} !important;
         box-shadow: 0px ${props.theme.mobile ? '90px' : '35px'} 40px #111 !important;
@@ -108,7 +121,7 @@ const StyledInput = styled.input`
     font-size: 1em;
     margin-left: 15px;
     outline: none !important;
-    width: 80%;
+    width: 100%;
 
     ${props => props.theme.theme === 'dark' ?
         `   color: ${props.theme.color3};
@@ -117,20 +130,6 @@ const StyledInput = styled.input`
         `   color: ${props.theme.color5};
         background-color: 'white';
     `};
-`
-
-const Submit = styled.button`
-    background-color: transparent;
-    border: none;
-    color: ${props => props.theme.theme === 'dark' ? props.theme.color3 : props.theme.color5};
-    cursor: pointer;
-    margin-right: 15px;
-    opacity: 0.4;
-    transition: 0.25s all;
-
-    &:hover {
-        opacity: 1;
-    }
 `
 
 // NOTE: A user id would normally be sent to fetch all list id's
@@ -248,13 +247,14 @@ const ToDoForm = () => {
     return (
         <StyledContainer>
             <InputContainer>
+                <CompletedToggle style={{ cursor: "default", margin: "0px 16px" }} />
                 <StyledInput
                     type="text"
                     onChange={(e) => { setInputVal(e.target.value) }}
+                    onKeyPress={(e) => { e.key === 'Enter' && addTodo() }}
                     placeholder="Create a new todo..."
                     value={inputVal}
                 />
-                <Submit onClick={() => { addTodo() }}>Submit</Submit>
             </InputContainer>
             <StyledCard>
                 <Table>

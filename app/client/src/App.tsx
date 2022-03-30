@@ -17,19 +17,18 @@ const Container = styled.div`
   position: absolute;
   top: 0px;
 
-  ${props => props.theme.mobile ? 
-  `
+  ${props => props.theme.mobile ?
+    `
     left: 5%;
     padding-top: 15px;
     width: 90%;
-  ` : 
-  `
+  ` :
+    `
     left: 50%;
     padding-top: 50px;
     transform: translateX(-50%);
     width: 720px;
-  `
-}`
+  `}`
 
 function App() {
   const { mobile, theme } = useAppSelector(state => state.settings)
@@ -38,9 +37,10 @@ function App() {
   const activeTheme = { mobile, theme, ...themeObj[theme as keyof object] as {} }
 
   useEffect(() => {
-    // TODO: add throttle for mobile
-    dispatch(setMobile(window.innerWidth < 768 ? true : false))
-  }, [window.innerWidth])
+    window.addEventListener("resize", function () {
+      dispatch(setMobile(window.innerWidth < 768 ? true : false))
+    }, false)
+  }, [])
 
   return (
     <ThemeProvider theme={activeTheme}>

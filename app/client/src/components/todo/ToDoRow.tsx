@@ -13,7 +13,7 @@ const CompletedCell = styled(TableCell)`
     ${props => props.theme.mobile ? `padding-right: 0px !important` : ``};
 `
 
-const CompletedToggle = styled.div`
+export const CompletedToggle = styled.div`
     border: 1px solid ${props => props.theme.theme === 'dark' ? props.theme.color6 : props.theme.color2};
     border-radius: 50%;
     cursor: pointer;
@@ -83,11 +83,11 @@ const StyledRow = styled(TableRow)`
     height: 35px;
 
     ${props => props.theme.theme === 'dark' ?
-    `
+        `
         background-color: ${props.theme.color2} !important;
         border-bottom: 1px solid ${props.theme.color7} !important;
     ` :
-    `
+        `
         background-color: white !important;
     `}
 
@@ -95,8 +95,8 @@ const StyledRow = styled(TableRow)`
 `
 
 const ToDoRow = (
-    { completed, description, id, removeTodo, updateTodoList }: 
-    { completed:boolean, description:string, id:string, removeTodo:Function, updateTodoList:Function }
+    { completed, description, id, removeTodo, updateTodoList }:
+        { completed: boolean, description: string, id: string, removeTodo: Function, updateTodoList: Function }
 ) => (
     <StyledRow>
         <CompletedCell>
