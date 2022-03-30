@@ -94,24 +94,46 @@ const StyledRow = styled(TableRow)`
     ${props => props.theme.mobile ? `padding: 5px 0px;` : `padding: 15px 0px;`}
 `
 
-const ToDoRow = (
-    { completed, description, id, removeTodo, updateTodoList }:
-        { completed: boolean, description: string, id: string, removeTodo: Function, updateTodoList: Function }
-) => (
-    <StyledRow>
-        <CompletedCell>
-            <CompletedToggle
-                className={completed ? 'completed' : ''}
-                onClick={() => { updateTodoList({ completed: !completed, description, id }) }}
-            >
-                {completed && <img src={check} alt="Complete" />}
-            </CompletedToggle>
-        </CompletedCell>
-        <DescriptionCell className={completed ? 'completed' : ''}>{description}</DescriptionCell>
-        <RemoveCell>
-            <img src={cancel} alt="Remove" onClick={() => { removeTodo((t: ToDo) => t.id !== id) }} />
-        </RemoveCell>
-    </StyledRow>
+const ToDoRow = ({
+    draggableProps,
+    dragHandleProps,
+    completed,
+    description,
+    id,
+    innerRef,
+    placeholder,
+    style,
+    removeTodo,
+    updateTodoList
+}: {
+    draggableProps: any,
+    dragHandleProps: any,
+    completed: boolean,
+    description: string,
+    id: string,
+    innerRef: any,
+    placeholder: any,
+    removeTodo: Function,
+    style: object,
+    updateTodoList: Function
+}) => (
+    <>
+        <StyledRow ref={innerRef} {...draggableProps} {...dragHandleProps} {...style}>
+            <CompletedCell>
+                <CompletedToggle
+                    className={completed ? 'completed' : ''}
+                    onClick={() => { updateTodoList({ completed: !completed, description, id }) }}
+                >
+                    {completed && <img src={check} alt="Complete" />}
+                </CompletedToggle>
+            </CompletedCell>
+            <DescriptionCell className={completed ? 'completed' : ''}>{description}</DescriptionCell>
+            <RemoveCell>
+                <img src={cancel} alt="Remove" onClick={() => { removeTodo((t: ToDo) => t.id !== id) }} />
+            </RemoveCell>
+        </StyledRow>
+        {placeholder}
+    </>
 )
 
 

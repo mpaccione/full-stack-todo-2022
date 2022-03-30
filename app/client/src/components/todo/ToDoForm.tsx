@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Container, Table, TableBody } from "@mui/material"
+import { Card, Container, Table } from "@mui/material"
 import { v4 as uuid } from "uuid"
 import styled from "styled-components"
 
-import { ToDoRow } from './index'
 import { CompletedToggle } from './ToDoRow'
 import { createList, deleteList, getList, updateList } from './actions'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { List, ToDo } from '../../shared/types'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import theme from '../../theme'
+import ToDoDragAndDrop from './ToDoDragAndDrop';
 
 // shared styles
 const menuStyles = `
@@ -258,11 +258,17 @@ const ToDoForm = () => {
             </InputContainer>
             <StyledCard>
                 <Table>
-                    <TableBody>
-                        {filteredTodos.map((todo: any) => (
-                            <ToDoRow key={todo.id} {...{ ...todo, removeTodo, updateTodoList }} />
-                        ))}
-                    </TableBody>
+                    <ToDoDragAndDrop 
+                        {...{ 
+                            filteredTodos, 
+                            list, 
+                            removeTodo, 
+                            setFilteredTodos, 
+                            setList,
+                            setTodoState, 
+                            updateTodoList 
+                        }}
+                    />
                 </Table>
                 <Footer>
                     {list.items.length > 0 &&
