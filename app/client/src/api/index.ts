@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import store from "../redux/store";
 import { setErrorMessage } from "../redux/errorSlice";
 

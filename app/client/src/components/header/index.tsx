@@ -53,6 +53,7 @@ const Header = () => {
         <Row>
             <h1>TODO</h1>
             <Icon
+                alt={theme}
                 src={ theme === 'dark' ? lightIcon : darkIcon } 
                 onClick={() => { theme === 'dark' ? dispatch(setTheme('light')) : dispatch(setTheme('dark')) }} 
             />
