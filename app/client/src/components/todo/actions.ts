@@ -6,6 +6,7 @@ import type { AppDispatch } from '../../redux/store';
 // NOTE: Creating a list would occur when there is no existing list
 // or when all tasks have been deleted and a new one is added.
 
+// CREATE
 const createList = (newTodo: ToDo) => async (dispatch: AppDispatch) => {
     dispatch(showLoader(true));
     const res = await post(`/list`, { newTodo })
@@ -15,6 +16,7 @@ const createList = (newTodo: ToDo) => async (dispatch: AppDispatch) => {
 
 // NOTE: Deleting a list would occur when there is no existing items.
 
+// DELETE
 const deleteList = (listId: string) => async (dispatch: AppDispatch) => {
     dispatch(showLoader(true));
     const res = await del(`/list/?listId=${listId}`)
@@ -22,6 +24,7 @@ const deleteList = (listId: string) => async (dispatch: AppDispatch) => {
     return res.data
 }
 
+// READ
 const getList = (listId: string) => async (dispatch: AppDispatch) => {
     dispatch(showLoader(true));
     const res = await get(`/list/?listId=${listId}`)
@@ -29,6 +32,7 @@ const getList = (listId: string) => async (dispatch: AppDispatch) => {
     return res.data
 }
 
+// UPDATE
 const updateList = (list: List) => async (dispatch: AppDispatch) => {
     dispatch(showLoader(true));
     const res = await put(`/list`, { list })

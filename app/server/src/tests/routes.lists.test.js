@@ -77,52 +77,52 @@ describe('Test List Middleware', () => {
   })
 })
 
-// // GET
-// describe('Test GET Endpoint', () => {
-//   it('should get a list', async () => {
-//     const res = await request(API).get(`${BASE_PATH}/list/`).query({ listId: seedJson[0].id })
+// GET
+describe('Test GET Endpoint', () => {
+  it('should get a list', async () => {
+    const res = await request(API).get(`${BASE_PATH}/list/`).query({ listId: seedJson[0].id })
 
-//     expect(res.statusCode).toEqual(200)
-//     expectList(res.body)
-//   })
-// })
+    expect(res.statusCode).toEqual(200)
+    expectList(res.body)
+  })
+})
 
-// // DELETE
-// describe('Test DELETE Endpoint', () => {
-//   it('should delete a list', async () => {
-//     const res = await request(API).delete(`${BASE_PATH}/list/`).query({ listId: seedJson[0].id })
+// DELETE
+describe('Test DELETE Endpoint', () => {
+  it('should delete a list', async () => {
+    const res = await request(API).delete(`${BASE_PATH}/list/`).query({ listId: seedJson[0].id })
 
-//     expect(res.statusCode).toEqual(200)
-//   })
-// })
+    expect(res.statusCode).toEqual(200)
+  })
+})
 
-// // POST
-// describe('Test POST Endpoint', () => {
-//   it('should create a new list and return it', async () => {
-//     const list = JSON.parse(JSON.stringify(seedJson[0]))
-//     const res = await request(API)
-//       .post(`${BASE_PATH}/list/`)
-//       .send({ list })
+// POST
+describe('Test POST Endpoint', () => {
+  it('should create a new list and return it', async () => {
+    const list = JSON.parse(JSON.stringify(seedJson[0]))
+    const res = await request(API)
+      .post(`${BASE_PATH}/list/`)
+      .send({ list })
 
-//     expect(res.statusCode).toEqual(200)
-//     expectList(res.body)
-//   })
-// })
+    expect(res.statusCode).toEqual(200)
+    expectList(res.body)
+  })
+})
 
-// // PUT
-// describe('Test PUT Endpoint', () => {
-//   it('should update and return list', async () => {
-//     const newTodo = {
-//       completed: false,
-//       description: 'Pass Unit Tests',
-//       id: '17e6e28d-ea2f-47e0-9c83-a5c4997e7763'
-//     }
-//     const res = await request(API)
-//       .put(`${BASE_PATH}/list/`)
-//       .send({ newTodo })
+// PUT
+describe('Test PUT Endpoint', () => {
+  it('should update and return list', async () => {
+    const newTodo = {
+      completed: false,
+      description: 'Pass Unit Tests',
+      id: '17e6e28d-ea2f-47e0-9c83-a5c4997e7763'
+    }
+    const res = await request(API)
+      .put(`${BASE_PATH}/list/`)
+      .send({ newTodo })
 
-//     expect(res.statusCode).toEqual(200)
-//     expectItem(res.body.items[0])
-//     expect(res.body.items[req.body.items.length - 1]).toEqual(newTodo)
-//   })
-// })
+    expect(res.statusCode).toEqual(200)
+    expectItem(res.body.items[0])
+    expect(res.body.items[req.body.items.length - 1]).toEqual(newTodo)
+  })
+})

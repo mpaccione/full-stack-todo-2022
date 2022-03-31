@@ -3,13 +3,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface ErrorState {
   errorMessage: String;
   successMessage: String;
-  showLoader: Boolean;
 }
 
 const initialState: ErrorState = {
   errorMessage: "",
   successMessage: "",
-  showLoader: false,
 };
 
 const mySlice = createSlice({
