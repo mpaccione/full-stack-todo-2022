@@ -58,13 +58,17 @@ const DescriptionCell = styled(TableCell)`
 
 const RemoveCell = styled(TableCell)`
     border-bottom: none !important;
+    position: relative;
 
     img {
         cursor: pointer;
-        float: right;
         opacity: 0.8;
         padding-right: 15px;
+        position: absolute;
+        right: 5px;
         transition: 0.25s all;
+        transform: translateY(-50%);
+        top: 50%;
         vertical-align: middle !important;
 
         ${props => props.theme.mobile && `
@@ -92,48 +96,50 @@ const StyledRow = styled(TableRow)`
     `}
 
     ${props => props.theme.mobile ? `padding: 5px 0px;` : `padding: 15px 0px;`}
+
+    &.isDragging td {
+        padding-top: 0px;
+        width: 100%;
+    }
 `
 
 const ToDoRow = ({
-    draggableProps,
-    dragHandleProps,
+    className,
     completed,
     description,
+    draggableProps,
+    dragHandleProps,
     id,
     innerRef,
-    placeholder,
-    style,
     removeTodo,
+    style,
     updateTodoList
 }: {
-    draggableProps: any,
-    dragHandleProps: any,
+    className: object,
     completed: boolean,
     description: string,
+    draggableProps: any,
+    dragHandleProps: any,
     id: string,
     innerRef: any,
-    placeholder: any,
     removeTodo: Function,
     style: object,
     updateTodoList: Function
 }) => (
-    <>
-        <StyledRow ref={innerRef} {...draggableProps} {...dragHandleProps} {...style}>
-            <CompletedCell>
-                <CompletedToggle
-                    className={completed ? 'completed' : ''}
-                    onClick={() => { updateTodoList({ completed: !completed, description, id }) }}
-                >
-                    {completed && <img src={check} alt="Complete" />}
-                </CompletedToggle>
-            </CompletedCell>
-            <DescriptionCell className={completed ? 'completed' : ''}>{description}</DescriptionCell>
-            <RemoveCell>
-                <img src={cancel} alt="Remove" onClick={() => { removeTodo((t: ToDo) => t.id !== id) }} />
-            </RemoveCell>
-        </StyledRow>
-        {placeholder}
-    </>
+    <StyledRow className={className} ref={innerRef} {...draggableProps} {...dragHandleProps} {...style}>
+        <CompletedCell>
+            <CompletedToggle
+                className={completed ? 'completed' : ''}
+                onClick={() => { updateTodoList({ completed: !completed, description, id }) }}
+            >
+                {completed && <img src={check} alt="Complete" />}
+            </CompletedToggle>
+        </CompletedCell>
+        <DescriptionCell className={completed ? 'completed' : ''}>{description}</DescriptionCell>
+        <RemoveCell>
+            <img src={cancel} alt="Remove" onClick={() => { removeTodo((t: ToDo) => t.id !== id) }} />
+        </RemoveCell>
+    </StyledRow>
 )
 
 

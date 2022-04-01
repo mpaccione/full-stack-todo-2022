@@ -14,8 +14,10 @@ const Body = styled.div`
 `
 
 const Container = styled.div`
+  display: block;
+  margin: auto;
   position: absolute;
-  top: 0px;
+  top: 0;
 
   ${props => props.theme.mobile ?
     `
@@ -24,9 +26,9 @@ const Container = styled.div`
     width: 90%;
   ` :
     `
-    left: 50%;
+    left: 0;
     padding-top: 50px;
-    transform: translateX(-50%);
+    right: 0;
     width: 720px;
   `}`
 

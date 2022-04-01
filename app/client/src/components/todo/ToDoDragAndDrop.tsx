@@ -23,7 +23,7 @@ const ToDoDragAndDrop = ({
     setList,
     setTodoState,
     updateTodoList
-}: {
+} : {
     filteredTodos: Array<ToDo | void>,
     list: List,
     removeTodo: Function,
@@ -42,7 +42,6 @@ const ToDoDragAndDrop = ({
 
     const getListStyle = (isDraggingOver: boolean) => ({
         background: isDraggingOver ? primaryGradient : "",
-        width: 2
     });
 
     const reorder = (list: any[], startIndex: number, endIndex: number) => {
@@ -90,21 +89,25 @@ const ToDoDragAndDrop = ({
                         {filteredTodos.map((todo: any, idx: number) => (
                             <Draggable draggableId={todo.id} index={idx} key={todo.id}>
                                 {(provided: any, snapshot) => (
-                                    <ToDoRow
-                                        {...{
-                                            draggableProps: provided.draggableProps,
-                                            dragHandleProps: provided.dragHandleProps,
-                                            placeholder: provided.placeholder,
-                                            ...todo,
-                                            removeTodo,
-                                            updateTodoList
-                                        }}
-                                        innerRef={provided.innerRef}
-                                        style={getItemStyle(
-                                            snapshot.isDragging,
-                                            provided.draggableProps.style
-                                        )}
-                                    />
+                                    <>
+                                        <ToDoRow
+                                            {...{
+                                                draggableProps: provided.draggableProps,
+                                                dragHandleProps: provided.dragHandleProps,
+                                                placeholder: provided.placeholder,
+                                                ...todo,
+                                                removeTodo,
+                                                updateTodoList
+                                            }}
+                                            className={snapshot.isDragging ? 'isDragging' : ''}
+                                            innerRef={provided.innerRef}
+                                            style={getItemStyle(
+                                                snapshot.isDragging,
+                                                provided.draggableProps.style
+                                            )}
+                                        />
+                                        {provided.placeholder}
+                                    </>
                                 )}
                             </Draggable>
                         ))}
