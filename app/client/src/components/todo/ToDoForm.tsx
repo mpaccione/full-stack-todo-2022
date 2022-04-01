@@ -3,12 +3,12 @@ import { Card, Container, Table } from "@mui/material"
 import { v4 as uuid } from "uuid"
 import styled from "styled-components"
 
-import { CompletedToggle } from './ToDoRow'
 import { createList, deleteList, getList, updateList } from './actions'
 import { List, ToDo } from '../../shared/types'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import theme from '../../theme'
-import ToDoDragAndDrop from './ToDoDragAndDrop';
+import ToDoDragAndDrop from './ToDoDragAndDrop'
+import ToDoInput from './ToDoInput'
 
 // shared styles
 const menuStyles = `
@@ -28,27 +28,6 @@ const menuStyles = `
 `
 
 // styled components
-const InputContainer = styled(Card)`
-    align-content: center;
-    box-shadow: none !important;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 20px;
-
-    background-color: ${props => props.theme.theme === 'dark' ? props.theme.color2 : 'white'} !important;
-
-    ${props => props.theme.mobile ?
-        `   margin-top: 10px;
-        padding: 10px 0px; 
-        height: 30px;
-    ` :
-        `   padding: 15px 0px; 
-        height: 35px;
-    `
-    }
-`
-
 const Instructions = styled.p`
     color: ${props => props.theme.theme === 'dark' ? props.theme.color3 : props.theme.color5} !important;
     font-size: 0.85em;
@@ -114,22 +93,6 @@ const StyledCard = styled(Card)`
 
 const StyledContainer = styled(Container)`
     padding: 0 !important;
-`
-
-const StyledInput = styled.input`
-    border: none;
-    font-size: 1em;
-    margin-left: 15px;
-    outline: none !important;
-    width: 100%;
-
-    ${props => props.theme.theme === 'dark' ?
-        `   color: ${props.theme.color3};
-        background-color: ${props.theme.color2};
-    ` :
-        `   color: ${props.theme.color5};
-        background-color: 'white';
-    `};
 `
 
 // NOTE: A user id would normally be sent to fetch all list id's
@@ -246,16 +209,7 @@ const ToDoForm = () => {
 
     return (
         <StyledContainer>
-            <InputContainer>
-                <CompletedToggle style={{ cursor: "default", margin: "0px 16px" }} />
-                <StyledInput
-                    type="text"
-                    onChange={(e) => { setInputVal(e.target.value) }}
-                    onKeyPress={(e) => { e.key === 'Enter' && addTodo() }}
-                    placeholder="Create a new todo..."
-                    value={inputVal}
-                />
-            </InputContainer>
+            <ToDoInput {...{ addTodo, inputVal, setInputVal }} />
             <StyledCard>
                 <Table>
                     <ToDoDragAndDrop 

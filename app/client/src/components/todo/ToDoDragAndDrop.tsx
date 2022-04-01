@@ -100,7 +100,6 @@ const ToDoDragAndDrop = ({
                                             updateTodoList
                                         }}
                                         innerRef={provided.innerRef}
-
                                         style={getItemStyle(
                                             snapshot.isDragging,
                                             provided.draggableProps.style
