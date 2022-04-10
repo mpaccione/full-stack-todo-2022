@@ -1,5 +1,4 @@
 const request = require('supertest')
-const { v4: uuid } = require('uuid')
 const { seedJson } = require('../utils')
 
 const API = 'http://localhost:5000'
@@ -66,8 +65,8 @@ describe('Test List Middleware', () => {
   it('should validate new todos [PUT]', async () => {
     const list = JSON.parse(JSON.stringify(seedJson[0]))
     list.id = 666
-    list.createdAt = new Date()
-    list.updatedAt = new Date()
+    list.createdAt = Date.now()
+    list.updatedAt = Date.now()
 
     const res = await request(API)
       .put(`${BASE_PATH}/list/`)
@@ -99,10 +98,17 @@ describe('Test DELETE Endpoint', () => {
 // POST
 describe('Test POST Endpoint', () => {
   it('should create a new list and return it', async () => {
-    const list = JSON.parse(JSON.stringify(seedJson[0]))
+    const newTodo = {
+      completed: false,
+      description: 'Pass Unit Tests',
+      id: '17e6e28d-ea2f-47e0-9c83-a5c4997e7763'
+    }
     const res = await request(API)
       .post(`${BASE_PATH}/list/`)
-      .send({ list })
+      .set('Content-Type', 'application/json')
+      .send({ newTodo })
+
+    console.log({res})
 
     expect(res.statusCode).toEqual(200)
     expectList(res.body)
@@ -112,14 +118,14 @@ describe('Test POST Endpoint', () => {
 // PUT
 describe('Test PUT Endpoint', () => {
   it('should update and return list', async () => {
-    const newTodo = {
-      completed: false,
-      description: 'Pass Unit Tests',
-      id: '17e6e28d-ea2f-47e0-9c83-a5c4997e7763'
-    }
+    const list = JSON.parse(JSON.stringify(seedJson[0]))
+    list.items.slice(1)
+
     const res = await request(API)
       .put(`${BASE_PATH}/list/`)
-      .send({ newTodo })
+      .send({ list })
+
+    console.log({ res })
 
     expect(res.statusCode).toEqual(200)
     expectItem(res.body.items[0])

@@ -1,5 +1,6 @@
 app/client/node_modules
 app/server/node_modules
+app/server/coverage
 app/server/yarn--*
 app/server/v8*
 app/mongodb/database
